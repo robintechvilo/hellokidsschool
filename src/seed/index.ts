@@ -14,7 +14,8 @@ import config from "@payload-config";
 import { events, facilities, faq, home, leadership, offer, programs, site } from "../content/site";
 import { about, admissions, dayCare, fullGallery, programDetails } from "../content/pages";
 
-const ctx = { disableRevalidate: true };
+// A fresh object per call — Payload plugins write flags into req.context.
+const ctx = () => ({ disableRevalidate: true });
 const root = process.cwd();
 const fresh = process.env.SEED_FRESH === "1";
 
@@ -48,14 +49,14 @@ async function run() {
       fs.appendFileSync(path.join(root, ".env.local"), `\nSEED_ADMIN_EMAIL=${email}\nSEED_ADMIN_PASSWORD=${password}\n`);
       log("Generated Super Admin login and saved it to .env.local (SEED_ADMIN_EMAIL / SEED_ADMIN_PASSWORD).");
     }
-    await payload.create({ collection: "users", data: { name: "Super Admin", email, password, role: "super-admin" }, context: ctx });
+    await payload.create({ collection: "users", data: { name: "Super Admin", email, password, role: "super-admin" }, context: ctx() });
     log(`Created Super Admin: ${email}`);
   }
 
   // ---------- Fresh mode ----------
   const contentCollections = ["programs", "facilities", "team", "events", "faqs", "testimonials", "media"] as const;
   if (fresh) {
-    for (const c of contentCollections) await payload.delete({ collection: c, where: { id: { exists: true } }, context: ctx });
+    for (const c of contentCollections) await payload.delete({ collection: c, where: { id: { exists: true } }, context: ctx() });
     log("Cleared content collections.");
   } else if ((await payload.count({ collection: "programs" })).totalDocs > 0) {
     log("Content already exists — skipping. Set SEED_FRESH=1 to reseed.");
@@ -79,7 +80,7 @@ async function run() {
         featuredOnHome: homeGallery.has(src),
         galleryOrder: galleryOrder.get(src) ?? 0,
       },
-      context: ctx,
+      context: ctx(),
     });
     media.set(src, doc.id);
   }
@@ -96,7 +97,7 @@ async function run() {
     const d = programDetails[p.slug];
     await payload.create({
       collection: "programs",
-      context: ctx,
+      context: ctx(),
       data: {
         name: p.name, slug: p.slug, age: p.age, color: p.color, image: m(p.image), blurb: p.blurb, intro: d.intro,
         learn: t(d.learn), highlights: t(d.highlights), photos: d.photos.map(m),
@@ -106,27 +107,27 @@ async function run() {
   }
 
   for (const [i, f] of facilities.entries()) {
-    await payload.create({ collection: "facilities", context: ctx,
+    await payload.create({ collection: "facilities", context: ctx(),
       data: { title: f.title, text: f.text, icon: f.icon as never, color: f.color, image: m(f.image), order: i } });
   }
 
   for (const [i, l] of leadership.entries()) {
-    await payload.create({ collection: "team", context: ctx,
+    await payload.create({ collection: "team", context: ctx(),
       data: { name: l.name, role: l.role, photo: m(l.image), message: l.message, showMessage: true, order: i } });
   }
 
   for (const [i, e] of events.entries()) {
-    await payload.create({ collection: "events", context: ctx,
+    await payload.create({ collection: "events", context: ctx(),
       data: { title: e.title, dateLabel: e.date, color: e.color, image: m(e.image), text: e.text, featured: true, order: i } });
   }
 
   for (const [i, f] of faq.entries()) {
-    await payload.create({ collection: "faqs", context: ctx, data: { question: f.q, answer: f.a, showOnHome: true, order: i } });
+    await payload.create({ collection: "faqs", context: ctx(), data: { question: f.q, answer: f.a, showOnHome: true, order: i } });
   }
   log("Created programs, facilities, team, events and FAQs.");
 
   // ---------- Globals ----------
-  await payload.updateGlobal({ slug: "site-settings", context: ctx, data: {
+  await payload.updateGlobal({ slug: "site-settings", context: ctx(), data: {
     name: site.name, shortName: site.shortName, tagline: site.tagline, motto: site.motto, hours: site.hours,
     phoneDisplay: site.phoneDisplay, phone: site.phone, whatsapp: site.whatsapp, whatsappText: site.whatsappText, email: site.email || undefined,
     address: site.address, mapQuery: site.mapQuery, facebook: site.facebook,
@@ -135,9 +136,9 @@ async function run() {
     ogImage: m("/images/orientation-2026.webp"),
   } });
 
-  await payload.updateGlobal({ slug: "offer", context: ctx, data: { enabled: offer.enabled, text: offer.text, cta: offer.cta, href: offer.href } });
+  await payload.updateGlobal({ slug: "offer", context: ctx(), data: { enabled: offer.enabled, text: offer.text, cta: offer.cta, href: offer.href } });
 
-  await payload.updateGlobal({ slug: "home-page", context: ctx, data: {
+  await payload.updateGlobal({ slug: "home-page", context: ctx(), data: {
     hero: {
       eyebrow: home.hero.eyebrow, titleLine2: home.hero.titleLine2, text: home.hero.text, badges: t(home.hero.badges),
       image: m(home.hero.image), mini: m(home.hero.mini), miniCaption: "Admission Open!",
@@ -153,12 +154,12 @@ async function run() {
     routine: home.routine.map((r) => ({ title: r.title, text: r.text, icon: r.icon as never, color: r.color })),
   } });
 
-  await payload.updateGlobal({ slug: "about-page", context: ctx, data: {
+  await payload.updateGlobal({ slug: "about-page", context: ctx(), data: {
     story: t(about.story), storyImage: m("/images/orientation-2.webp"), mission: about.mission, vision: about.vision,
     values: about.values.map((v) => ({ title: v.title, text: v.text, icon: v.icon as never, color: v.color })),
   } });
 
-  await payload.updateGlobal({ slug: "admissions-page", context: ctx, data: {
+  await payload.updateGlobal({ slug: "admissions-page", context: ctx(), data: {
     steps: admissions.steps, documents: t(admissions.documents),
     feeNote: "Please call or visit us for the latest fee details and the 50% admission offer.",
     formImage: m("/images/butterfly-boy.webp"),

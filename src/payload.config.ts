@@ -1,3 +1,4 @@
+import crypto from "crypto";
 import path from "path";
 import { fileURLToPath } from "url";
 import { buildConfig } from "payload";
@@ -8,6 +9,7 @@ import { vercelBlobStorage } from "@payloadcms/storage-vercel-blob";
 import { importExportPlugin } from "@payloadcms/plugin-import-export";
 import { resendAdapter } from "@payloadcms/email-resend";
 import sharp from "sharp";
+import { dbUri, isPostgres, useBlob, useS3 } from "./payload/env";
 
 import { Users } from "./payload/collections/Users";
 import { Media } from "./payload/collections/Media";
@@ -17,21 +19,17 @@ import { AboutPage, AdmissionsPage, HomePage, Offer, SiteSettings } from "./payl
 
 const dirname = path.dirname(fileURLToPath(import.meta.url));
 
-/**
- * Database:
- *  - DATABASE_URI wins (local .env.local → SQLite file, or an explicit Postgres URL).
- *  - On Vercel, the Neon integration provides POSTGRES_URL (pooled).
- *  - Postgres (Neon / VPS) uses committed migrations in src/migrations; SQLite (dev) uses push.
- */
-const dbUri = process.env.DATABASE_URI || process.env.POSTGRES_URL || "file:./data/hello-kids.db";
-const isPostgres = dbUri.startsWith("postgres");
+// Database + storage decisions live in ./payload/env.ts (shared with the Media collection).
 const db = isPostgres
   ? postgresAdapter({ pool: { connectionString: dbUri }, migrationDir: path.resolve(dirname, "migrations"), push: false })
   : sqliteAdapter({ client: { url: dbUri } });
 
-// Media storage: Vercel Blob in production (Postgres + token), or S3/R2 if configured, else local ./media.
-const useBlob = isPostgres && !!process.env.BLOB_READ_WRITE_TOKEN && !process.env.S3_BUCKET;
-const useS3 = !!process.env.S3_BUCKET;
+// Secret folder for lead exports in the public Blob store (derived from PAYLOAD_SECRET).
+const privateFilesPrefix = `private-${crypto
+  .createHash("sha256")
+  .update(process.env.PAYLOAD_SECRET || "dev")
+  .digest("hex")
+  .slice(0, 32)}`;
 
 const serverURL =
   process.env.NEXT_PUBLIC_SERVER_URL ||
@@ -75,10 +73,13 @@ export default buildConfig({
     vercelBlobStorage({
       enabled: useBlob,
       // Files are public images; serve them straight from the Blob CDN.
-      collections: { media: { disablePayloadAccessControl: true }, exports: true, imports: true },
+      collections: {
+        media: { disablePayloadAccessControl: true },
+        // Export/import files contain parents' details: keep them under a secret, unguessable folder.
+        exports: { prefix: privateFilesPrefix },
+        imports: { prefix: privateFilesPrefix },
+      },
       token: process.env.BLOB_READ_WRITE_TOKEN,
-      // Unguessable URLs — export files contain parents' details and the store is public.
-      addRandomSuffix: true,
       // Upload from the browser straight to Blob (Vercel functions cap request bodies at 4.5 MB).
       clientUploads: true,
     }),

@@ -1,6 +1,7 @@
 import type { CollectionConfig } from "payload";
 import { anyone, staff } from "../access";
 import { contentHooks } from "../hooks";
+import { mediaStaticDir } from "../env";
 
 export const galleryCategoryOptions = ["Classroom", "Events", "Art & Craft", "Play & Tours"];
 
@@ -19,7 +20,7 @@ export const Media: CollectionConfig = {
   access: { read: anyone, create: staff, update: staff, delete: staff },
   hooks: contentHooks,
   upload: {
-    staticDir: "media",
+    staticDir: mediaStaticDir,
     mimeTypes: ["image/*", "application/pdf"],
     focalPoint: true,
     resizeOptions: { width: 1600, height: 1600, fit: "inside", withoutEnlargement: true },
