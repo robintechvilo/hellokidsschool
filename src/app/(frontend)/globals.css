@@ -1,0 +1,80 @@
+@import "tailwindcss";
+
+@theme {
+  --color-navy: #1e2a78;
+  --color-navy-dark: #131b55;
+  --color-purple: #8b2c8f;
+  --color-red: #e32d2d;
+  --color-orange: #f7941d;
+  --color-yellow: #ffc20e;
+  --color-green: #1b8f3a;
+  --color-pink: #e6197e;
+  --color-teal: #0e8fa6;
+  --color-sky: #cfeaf8;
+  --color-sky-light: #eaf6fd;
+  --color-cream: #fff8ec;
+  --color-ink: #1f2340;
+
+  --font-display: var(--font-fredoka), ui-rounded, system-ui, sans-serif;
+  --font-body: var(--font-nunito), system-ui, sans-serif;
+  --font-script: var(--font-gochi), cursive;
+
+  --animate-float: float 6s ease-in-out infinite;
+  --animate-float-slow: float 9s ease-in-out infinite;
+  --animate-spin-slow: spin 18s linear infinite;
+  --animate-drift: drift 40s linear infinite;
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0) rotate(0deg); }
+  50% { transform: translateY(-14px) rotate(3deg); }
+}
+@keyframes drift {
+  from { transform: translateX(-10%); }
+  to { transform: translateX(110vw); }
+}
+
+@layer base {
+  html { scroll-behavior: smooth; }
+  body {
+    background: #fff;
+    color: var(--color-ink);
+    font-family: var(--font-body);
+    -webkit-font-smoothing: antialiased;
+  }
+  h1, h2, h3, h4 { font-family: var(--font-display); line-height: 1.1; }
+  ::selection { background: var(--color-yellow); color: var(--color-navy); }
+}
+
+@layer components {
+  .container-x { margin-inline: auto; width: 100%; max-width: 80rem; padding-inline: 1rem; }
+  @media (min-width: 640px) { .container-x { padding-inline: 1.5rem; } }
+
+  /* 3D "pressable" pill button */
+  .btn {
+    display: inline-flex; align-items: center; justify-content: center; gap: .5rem;
+    border-radius: 9999px; padding: .85rem 1.6rem; font-family: var(--font-display);
+    font-weight: 600; font-size: 1.05rem; line-height: 1; transition: transform .15s, box-shadow .15s, filter .15s;
+    box-shadow: 0 5px 0 var(--btn-shadow);
+  }
+  .btn:hover { filter: brightness(1.05); transform: translateY(-2px); box-shadow: 0 7px 0 var(--btn-shadow); }
+  .btn:active { transform: translateY(4px); box-shadow: 0 1px 0 var(--btn-shadow); }
+  .btn:focus-visible { outline: 3px solid var(--color-yellow); outline-offset: 3px; }
+  .btn-orange { background: var(--color-orange); color: var(--color-navy); --btn-shadow: #c26a05; }
+  .btn-yellow { background: var(--color-yellow); color: var(--color-navy); --btn-shadow: #c99500; }
+  .btn-navy { background: var(--color-navy); color: #fff; --btn-shadow: #0b1140; }
+  .btn-pink { background: var(--color-pink); color: #fff; --btn-shadow: #a50e58; }
+  .btn-white { background: #fff; color: var(--color-navy); --btn-shadow: #b9c3e6; }
+  .btn-green { background: #25d366; color: #073b1c; --btn-shadow: #179848; }
+
+  .blob { border-radius: 58% 42% 49% 51% / 45% 52% 48% 55%; }
+  .blob-2 { border-radius: 42% 58% 38% 62% / 55% 40% 60% 45%; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation: none !important; transition: none !important; scroll-behavior: auto !important; }
+}
+
+/* CSS-only entrance for above-the-fold content (visible without JS) */
+@keyframes rise { from { opacity: 0; transform: translateY(24px); } to { opacity: 1; transform: none; } }
+.rise { animation: rise .7s cubic-bezier(.22,1,.36,1) both; }
