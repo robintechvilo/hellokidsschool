@@ -26,7 +26,7 @@ const dirname = path.dirname(fileURLToPath(import.meta.url));
 const dbUri = process.env.DATABASE_URI || process.env.POSTGRES_URL || "file:./data/hello-kids.db";
 const isPostgres = dbUri.startsWith("postgres");
 const db = isPostgres
-  ? postgresAdapter({ pool: { connectionString: dbUri }, migrationDir: path.resolve(dirname, "migrations") })
+  ? postgresAdapter({ pool: { connectionString: dbUri }, migrationDir: path.resolve(dirname, "migrations"), push: false })
   : sqliteAdapter({ client: { url: dbUri } });
 
 // Media storage: Vercel Blob in production (Postgres + token), or S3/R2 if configured, else local ./media.
@@ -75,8 +75,10 @@ export default buildConfig({
     vercelBlobStorage({
       enabled: useBlob,
       // Files are public images; serve them straight from the Blob CDN.
-      collections: { media: { disablePayloadAccessControl: true } },
+      collections: { media: { disablePayloadAccessControl: true }, exports: true, imports: true },
       token: process.env.BLOB_READ_WRITE_TOKEN,
+      // Unguessable URLs — export files contain parents' details and the store is public.
+      addRandomSuffix: true,
       // Upload from the browser straight to Blob (Vercel functions cap request bodies at 4.5 MB).
       clientUploads: true,
     }),

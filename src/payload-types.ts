@@ -227,7 +227,6 @@ export interface Media {
   galleryCategory?: ('Classroom' | 'Events' | 'Art & Craft' | 'Play & Tours') | null;
   featuredOnHome?: boolean | null;
   galleryOrder?: number | null;
-  _objectKey?: string | null;
   updatedAt: string;
   createdAt: string;
   url?: string | null;
@@ -851,7 +850,6 @@ export interface MediaSelect<T extends boolean = true> {
   galleryCategory?: T;
   featuredOnHome?: T;
   galleryOrder?: T;
-  _objectKey?: T;
   updatedAt?: T;
   createdAt?: T;
   url?: T;
