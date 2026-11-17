@@ -1,0 +1,9 @@
+# Never upload local secrets, databases, uploads or original photos to Vercel
+.env*
+!.env.example
+data/
+media/
+assets/raw/
+.next/
+node_modules/
+.claude/

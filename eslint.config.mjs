@@ -14,5 +14,6 @@ export default defineConfig([
     "next-env.d.ts",
     "src/payload-types.ts",
     "src/app/(payload)/admin/importMap.js",
+    "src/migrations/**",
   ]),
 ]);

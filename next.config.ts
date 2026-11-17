@@ -5,7 +5,11 @@ const nextConfig: NextConfig = {
   images: {
     // Payload serves uploaded media from /api/media/file/* (local) or the R2 public URL (production).
     localPatterns: [{ pathname: "/api/media/file/**" }, { pathname: "/images/**" }, { pathname: "/*.png" }],
-    remotePatterns: process.env.S3_PUBLIC_URL ? [new URL(`${process.env.S3_PUBLIC_URL.replace(/\/$/, "")}/**`)] : [],
+    remotePatterns: [
+      // Vercel Blob (production media)
+      { protocol: "https", hostname: "*.public.blob.vercel-storage.com" },
+      ...(process.env.S3_PUBLIC_URL ? [new URL(`${process.env.S3_PUBLIC_URL.replace(/\/$/, "")}/**`)] : []),
+    ],
   },
 };
 

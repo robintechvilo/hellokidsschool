@@ -4,6 +4,7 @@ import { buildConfig } from "payload";
 import { sqliteAdapter } from "@payloadcms/db-sqlite";
 import { postgresAdapter } from "@payloadcms/db-postgres";
 import { s3Storage } from "@payloadcms/storage-s3";
+import { vercelBlobStorage } from "@payloadcms/storage-vercel-blob";
 import { importExportPlugin } from "@payloadcms/plugin-import-export";
 import { resendAdapter } from "@payloadcms/email-resend";
 import sharp from "sharp";
@@ -17,18 +18,31 @@ import { AboutPage, AdmissionsPage, HomePage, Offer, SiteSettings } from "./payl
 const dirname = path.dirname(fileURLToPath(import.meta.url));
 
 /**
- * Database: Postgres when DATABASE_URI starts with "postgres" (Neon on Vercel, Postgres on the VPS);
- * otherwise a local SQLite file for development.
+ * Database:
+ *  - DATABASE_URI wins (local .env.local → SQLite file, or an explicit Postgres URL).
+ *  - On Vercel, the Neon integration provides POSTGRES_URL (pooled).
+ *  - Postgres (Neon / VPS) uses committed migrations in src/migrations; SQLite (dev) uses push.
  */
-const dbUri = process.env.DATABASE_URI || "file:./data/hello-kids.db";
-const db = dbUri.startsWith("postgres")
-  ? postgresAdapter({ pool: { connectionString: dbUri } })
+const dbUri = process.env.DATABASE_URI || process.env.POSTGRES_URL || "file:./data/hello-kids.db";
+const isPostgres = dbUri.startsWith("postgres");
+const db = isPostgres
+  ? postgresAdapter({ pool: { connectionString: dbUri }, migrationDir: path.resolve(dirname, "migrations") })
   : sqliteAdapter({ client: { url: dbUri } });
 
+// Media storage: Vercel Blob in production (Postgres + token), or S3/R2 if configured, else local ./media.
+const useBlob = isPostgres && !!process.env.BLOB_READ_WRITE_TOKEN && !process.env.S3_BUCKET;
 const useS3 = !!process.env.S3_BUCKET;
 
+const serverURL =
+  process.env.NEXT_PUBLIC_SERVER_URL ||
+  (process.env.VERCEL_PROJECT_PRODUCTION_URL ? `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}` : "");
+
+if (process.env.NODE_ENV === "production" && isPostgres && !process.env.PAYLOAD_SECRET) {
+  throw new Error("PAYLOAD_SECRET must be set in production.");
+}
+
 export default buildConfig({
-  serverURL: process.env.NEXT_PUBLIC_SERVER_URL || "",
+  serverURL,
   secret: process.env.PAYLOAD_SECRET || "dev-only-secret-change-me",
   admin: {
     user: Users.slug,
@@ -58,6 +72,14 @@ export default buildConfig({
   upload: { limits: { fileSize: 10_000_000 } },
   plugins: [
     importExportPlugin({ collections: [{ slug: "admissions" }, { slug: "visit-bookings" }, { slug: "messages" }] }),
+    vercelBlobStorage({
+      enabled: useBlob,
+      // Files are public images; serve them straight from the Blob CDN.
+      collections: { media: { disablePayloadAccessControl: true } },
+      token: process.env.BLOB_READ_WRITE_TOKEN,
+      // Upload from the browser straight to Blob (Vercel functions cap request bodies at 4.5 MB).
+      clientUploads: true,
+    }),
     s3Storage({
       enabled: useS3,
       collections: { media: process.env.S3_PUBLIC_URL
