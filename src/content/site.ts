@@ -131,10 +131,10 @@ export const home = {
 
 // ---- Collection: Leadership ----
 export const leadership = [
-  { name: "Principal", role: "Principal", image: "/images/principal.webp", // TODO: name & title
-    message: "Every child is unique. At Hello Kids, we give each little learner the love, attention and joyful learning they need to grow into confident, kind and curious people." },
-  { name: "Director", role: "Director", image: "/images/director.webp", // TODO: name & title
+  { name: "Md Shah Alam Riyadh", role: "Chairman", image: "/images/director.webp", // TODO: own message
     message: "Our goal is simple — a safe, modern and happy pre-school in Mirpur that parents trust and children love to come to every day." },
+  { name: "Dilsat Jahan", role: "Managing Director", image: "/images/principal.webp", // TODO: own message
+    message: "Every child is unique. At Hello Kids, we give each little learner the love, attention and joyful learning they need to grow into confident, kind and curious people." },
 ];
 
 // ---- Collection: Events ----
