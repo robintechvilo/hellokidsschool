@@ -1,4 +1,5 @@
 import Image from "next/image";
+import { homeHeadings, type Heading } from "@/content/labels";
 import type { FacilityData } from "@/lib/cms";
 import { bg, onBg, text } from "@/lib/colors";
 import { Icon } from "@/components/ui/Icon";
@@ -6,14 +7,13 @@ import { SectionTitle } from "@/components/ui/SectionTitle";
 import { Reveal } from "@/components/ui/Reveal";
 import { Wave, Cloud } from "@/components/ui/Decor";
 
-export function Facilities({ items }: { items: FacilityData[] }) {
+export function Facilities({ items, heading = homeHeadings.facilities }: { items: FacilityData[]; heading?: Heading }) {
   return (
     <section className="relative bg-cream">
       <Wave className="-mt-px h-12 text-white sm:h-16" flip />
       <Cloud className="absolute right-6 top-20 w-32 opacity-80" />
       <div className="container-x py-16 sm:py-20">
-        <SectionTitle eyebrow="Why parents choose us" title="Our Facilities"
-          text="Everything your child needs to feel safe, happy and excited to learn — all under one roof." />
+        <SectionTitle eyebrow={heading.eyebrow} title={heading.title} text={heading.text || undefined} />
         <div className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
           {items.map((f, i) => (
             <Reveal key={f.title} delay={(i % 4) * 0.07}>

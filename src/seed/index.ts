@@ -13,6 +13,7 @@ import { getPayload } from "payload";
 import config from "@payload-config";
 import { events, facilities, faq, home, leadership, offer, programs, site } from "../content/site";
 import { about, admissions, dayCare, fullGallery, programDetails } from "../content/pages";
+import { fillLabels } from "./labels";
 
 // A fresh object per call — Payload plugins write flags into req.context.
 const ctx = () => ({ disableRevalidate: true });
@@ -165,6 +166,8 @@ async function run() {
     formImage: m("/images/butterfly-boy.webp"),
   } });
   log("Filled Site Settings, Offer, Home, About and Admissions pages.");
+  await fillLabels(payload, (m) => log(m.trim()));
+  log("Filled page banners, headings and SEO.");
   log("Done ✔");
   process.exit(0);
 }

@@ -1,23 +1,20 @@
 import type { Metadata } from "next";
 import Image from "next/image";
-import { getFacilities, getOffer, getSite } from "@/lib/cms";
+import { getFacilities, getOffer, getPage, getSite, pageMetadata } from "@/lib/cms";
 import { bg, onBg, text } from "@/lib/colors";
 import { PageHero } from "@/components/ui/PageHero";
 import { Reveal } from "@/components/ui/Reveal";
 import { Icon } from "@/components/ui/Icon";
 import { AdmissionCTA } from "@/components/sections/AdmissionCTA";
 
-export const metadata: Metadata = {
-  title: "Facilities",
-  description: "Day Care, AC classrooms, kids play zone, smart pre-school technology, art, music & dance, trained teachers and study tours at Hello Kids, Mirpur.",
-};
+export const generateMetadata = (): Promise<Metadata> => pageMetadata("facilities");
 
 export default async function FacilitiesPage() {
+  const page = await getPage("facilities");
   const [facilities, site, offer] = await Promise.all([getFacilities(), getSite(), getOffer()]);
   return (
     <>
-      <PageHero eyebrow="Everything under one roof" title="Our Facilities" crumbs={[{ label: "Facilities" }]}
-        text="Safe, modern and full of fun — designed for how little children learn best." />
+      <PageHero eyebrow={page.banner.eyebrow} title={page.banner.title} text={page.banner.text || undefined} crumbs={[{ label: "Facilities" }]} />
       <section className="py-16 sm:py-20">
         <div className="container-x space-y-16 sm:space-y-24">
           {facilities.map((f, i) => (

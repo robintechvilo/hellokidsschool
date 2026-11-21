@@ -3,7 +3,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ArrowRight, CheckCircle2, Sparkles, Wallet } from "lucide-react";
-import { getProgram, getPrograms } from "@/lib/cms";
+import { getPage, getProgram, getPrograms } from "@/lib/cms";
 import { bg, onBg, softBg, text } from "@/lib/colors";
 import { PageHero } from "@/components/ui/PageHero";
 import { SectionTitle } from "@/components/ui/SectionTitle";
@@ -24,10 +24,11 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 export default async function ProgramPage({ params }: Props) {
   const { slug } = await params;
-  const [p, all] = await Promise.all([getProgram(slug), getPrograms()]);
+  const [p, all, page] = await Promise.all([getProgram(slug), getPrograms(), getPage("programs")]);
   if (!p) notFound();
   const others = all.filter((x) => x.slug !== p.slug);
   const classNames = all.map((x) => x.name);
+  const fill = (t: string) => t.replaceAll("{class}", p.name);
 
   return (
     <>
@@ -41,7 +42,7 @@ export default async function ProgramPage({ params }: Props) {
               className="relative aspect-[4/3] w-full rounded-[2.2rem] border-8 border-white object-cover object-top shadow-xl" />
           </Reveal>
           <div>
-            <SectionTitle align="left" eyebrow="About this class" title={`Welcome to ${p.name}`} />
+            <SectionTitle align="left" eyebrow={fill(page.headings.about.eyebrow)} title={fill(page.headings.about.title)} />
             <Reveal delay={0.1}>
               <p className="mt-4 text-lg text-ink/80">{p.intro}</p>
               <div className="mt-6 flex flex-wrap gap-3">
@@ -63,7 +64,7 @@ export default async function ProgramPage({ params }: Props) {
 
       <section className={`py-16 sm:py-20 ${softBg[p.color]}`}>
         <div className="container-x">
-          <SectionTitle eyebrow="Fun every day" title="What children learn" />
+          <SectionTitle eyebrow={fill(page.headings.learn.eyebrow)} title={fill(page.headings.learn.title)} />
           <ul className="mx-auto mt-10 grid max-w-4xl gap-4 sm:grid-cols-2">
             {p.learn.map((l, i) => (
               <li key={l}>
@@ -88,7 +89,7 @@ export default async function ProgramPage({ params }: Props) {
 
       <section className="py-16 sm:py-20">
         <div className="container-x max-w-4xl">
-          <SectionTitle eyebrow="Admissions open" title={`Apply for ${p.name}`} text="Fill in the form and our team will call you to arrange a visit." />
+          <SectionTitle eyebrow={fill(page.headings.apply.eyebrow)} title={fill(page.headings.apply.title)} text={fill(page.headings.apply.text ?? "") || undefined} />
           <Reveal className="mt-10 rounded-[2rem] bg-white p-6 shadow-[0_16px_40px_-20px_rgba(30,42,120,.5)] ring-1 ring-navy/5 sm:p-10">
             <AdmissionForm classes={classNames} defaultClass={p.name} />
           </Reveal>

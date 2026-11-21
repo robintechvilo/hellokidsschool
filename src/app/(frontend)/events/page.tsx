@@ -1,23 +1,20 @@
 import type { Metadata } from "next";
 import Image from "next/image";
 import { CalendarDays } from "lucide-react";
-import { getEvents, getGallery } from "@/lib/cms";
+import { getEvents, getGallery, getHome, getPage, pageMetadata } from "@/lib/cms";
 import { bg, onBg } from "@/lib/colors";
 import { PageHero } from "@/components/ui/PageHero";
 import { Reveal } from "@/components/ui/Reveal";
 import { GalleryPreview } from "@/components/sections/GalleryPreview";
 
-export const metadata: Metadata = {
-  title: "Events & Activities",
-  description: "Orientation, Fruit Festival, birthday celebrations and more fun events at Hello Kids Pre-School, Mirpur.",
-};
+export const generateMetadata = (): Promise<Metadata> => pageMetadata("events");
 
 export default async function EventsPage() {
-  const [events, gallery] = await Promise.all([getEvents(), getGallery(true)]);
+  const page = await getPage("events");
+  const [events, gallery, home] = await Promise.all([getEvents(), getGallery(true), getHome()]);
   return (
     <>
-      <PageHero eyebrow="Fun at school" title="Events & Activities" crumbs={[{ label: "Events" }]}
-        text="Celebrations, festivals and special days that make school life magical." />
+      <PageHero eyebrow={page.banner.eyebrow} title={page.banner.title} text={page.banner.text || undefined} crumbs={[{ label: "Events" }]} />
       <section className="py-16 sm:py-20">
         <div className="container-x space-y-10">
           {events.map((e, i) => (
@@ -37,7 +34,7 @@ export default async function EventsPage() {
           ))}
         </div>
       </section>
-      <GalleryPreview items={gallery} />
+      <GalleryPreview items={gallery} heading={home.headings.gallery} />
     </>
   );
 }

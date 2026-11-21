@@ -1,4 +1,5 @@
 import Image from "next/image";
+import { homeHeadings, type Heading } from "@/content/labels";
 import { Quote } from "lucide-react";
 import type { TeamData } from "@/lib/cms";
 import { SectionTitle } from "@/components/ui/SectionTitle";
@@ -11,11 +12,11 @@ const accents = [
   { frame: "bg-pink", text: "text-pink", badge: "bg-pink text-white", soft: "from-pink/10" },
 ];
 
-export function Leadership({ items }: { items: TeamData[] }) {
+export function Leadership({ items, heading = homeHeadings.leadership }: { items: TeamData[]; heading?: Heading }) {
   return (
     <section className="py-16 sm:py-24">
       <div className="container-x">
-        <SectionTitle eyebrow="A message from" title="Our Leadership" />
+        <SectionTitle eyebrow={heading.eyebrow} title={heading.title} text={heading.text || undefined} />
         <div className="mt-14 grid gap-10 lg:grid-cols-2 lg:gap-8">
           {items.map((l, i) => {
             const a = accents[i % accents.length];

@@ -1,14 +1,15 @@
 import type { RoutineData } from "@/lib/cms";
+import { homeHeadings, type Heading } from "@/content/labels";
 import { bg, onBg } from "@/lib/colors";
 import { Icon } from "@/components/ui/Icon";
 import { SectionTitle } from "@/components/ui/SectionTitle";
 import { Reveal } from "@/components/ui/Reveal";
 
-export function Routine({ items }: { items: RoutineData[] }) {
+export function Routine({ items, heading = homeHeadings.routine }: { items: RoutineData[]; heading?: Heading }) {
   return (
     <section className="bg-sky-light py-16 sm:py-24">
       <div className="container-x">
-        <SectionTitle eyebrow="A day at Hello Kids" title="Our Happy Daily Routine" />
+        <SectionTitle eyebrow={heading.eyebrow} title={heading.title} text={heading.text || undefined} />
         <div className="relative mt-14">
           {/* dashed path */}
           <svg className="absolute left-0 right-0 top-10 hidden h-6 w-full lg:block" preserveAspectRatio="none" viewBox="0 0 1000 20" aria-hidden>

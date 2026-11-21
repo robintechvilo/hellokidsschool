@@ -1,4 +1,5 @@
 import Image from "next/image";
+import { homeHeadings, type Heading } from "@/content/labels";
 import Link from "next/link";
 import { CalendarDays } from "lucide-react";
 import type { EventData } from "@/lib/cms";
@@ -6,11 +7,11 @@ import { bg, onBg } from "@/lib/colors";
 import { SectionTitle } from "@/components/ui/SectionTitle";
 import { Reveal } from "@/components/ui/Reveal";
 
-export function Events({ items }: { items: EventData[] }) {
+export function Events({ items, heading = homeHeadings.events }: { items: EventData[]; heading?: Heading }) {
   return (
     <section className="bg-cream py-16 sm:py-24">
       <div className="container-x">
-        <SectionTitle eyebrow="Fun at school" title="Events & Activities" />
+        <SectionTitle eyebrow={heading.eyebrow} title={heading.title} text={heading.text || undefined} />
         <div className="mt-12 grid gap-6 md:grid-cols-3">
           {items.map((e, i) => (
             <Reveal key={e.title} delay={i * 0.08}>

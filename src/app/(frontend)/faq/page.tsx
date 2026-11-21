@@ -1,16 +1,14 @@
 import type { Metadata } from "next";
-import { getFaqs, getOffer, getSite } from "@/lib/cms";
+import { getFaqs, getHome, getOffer, getPage, getSite, pageMetadata } from "@/lib/cms";
 import { PageHero } from "@/components/ui/PageHero";
 import { Faq } from "@/components/sections/Faq";
 import { AdmissionCTA } from "@/components/sections/AdmissionCTA";
 
-export const metadata: Metadata = {
-  title: "FAQ",
-  description: "Answers to common questions from parents about classes, Day Care, admission and location at Hello Kids Pre-School, Mirpur.",
-};
+export const generateMetadata = (): Promise<Metadata> => pageMetadata("faq");
 
 export default async function FaqPage() {
-  const [faq, site, offer] = await Promise.all([getFaqs(), getSite(), getOffer()]);
+  const page = await getPage("faq");
+  const [faq, site, offer, home] = await Promise.all([getFaqs(), getSite(), getOffer(), getHome()]);
   const jsonLd = {
   "@context": "https://schema.org",
   "@type": "FAQPage",
@@ -20,8 +18,8 @@ export default async function FaqPage() {
 
   return (
     <>
-      <PageHero eyebrow="We're here to help" title="Parents' FAQ" crumbs={[{ label: "FAQ" }]} />
-      <Faq items={faq} />
+      <PageHero eyebrow={page.banner.eyebrow} title={page.banner.title} text={page.banner.text || undefined} crumbs={[{ label: "FAQ" }]} />
+      <Faq items={faq} heading={home.headings.faq} />
       <AdmissionCTA site={site} offer={offer} />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
     </>

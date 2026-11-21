@@ -67,6 +67,9 @@ export interface Config {
   };
   blocks: {};
   collections: {
+    admissions: Admission;
+    'visit-bookings': VisitBooking;
+    messages: Message;
     programs: Program;
     facilities: Facility;
     team: Team;
@@ -74,9 +77,6 @@ export interface Config {
     testimonials: Testimonial;
     faqs: Faq;
     media: Media;
-    admissions: Admission;
-    'visit-bookings': VisitBooking;
-    messages: Message;
     users: User;
     exports: Export;
     imports: Import;
@@ -88,6 +88,9 @@ export interface Config {
   };
   collectionsJoins: {};
   collectionsSelect: {
+    admissions: AdmissionsSelect<false> | AdmissionsSelect<true>;
+    'visit-bookings': VisitBookingsSelect<false> | VisitBookingsSelect<true>;
+    messages: MessagesSelect<false> | MessagesSelect<true>;
     programs: ProgramsSelect<false> | ProgramsSelect<true>;
     facilities: FacilitiesSelect<false> | FacilitiesSelect<true>;
     team: TeamSelect<false> | TeamSelect<true>;
@@ -95,9 +98,6 @@ export interface Config {
     testimonials: TestimonialsSelect<false> | TestimonialsSelect<true>;
     faqs: FaqsSelect<false> | FaqsSelect<true>;
     media: MediaSelect<false> | MediaSelect<true>;
-    admissions: AdmissionsSelect<false> | AdmissionsSelect<true>;
-    'visit-bookings': VisitBookingsSelect<false> | VisitBookingsSelect<true>;
-    messages: MessagesSelect<false> | MessagesSelect<true>;
     users: UsersSelect<false> | UsersSelect<true>;
     exports: ExportsSelect<false> | ExportsSelect<true>;
     imports: ImportsSelect<false> | ImportsSelect<true>;
@@ -114,14 +114,28 @@ export interface Config {
   globals: {
     'home-page': HomePage;
     'about-page': AboutPage;
+    'programs-page': ProgramsPage;
+    'facilities-page': FacilitiesPage;
+    'gallery-page': GalleryPage;
+    'events-page': EventsPage;
     'admissions-page': AdmissionsPage;
+    'contact-page': ContactPage;
+    'faq-page': FaqPage;
+    'privacy-page': PrivacyPage;
     'site-settings': SiteSetting;
     offer: Offer;
   };
   globalsSelect: {
     'home-page': HomePageSelect<false> | HomePageSelect<true>;
     'about-page': AboutPageSelect<false> | AboutPageSelect<true>;
+    'programs-page': ProgramsPageSelect<false> | ProgramsPageSelect<true>;
+    'facilities-page': FacilitiesPageSelect<false> | FacilitiesPageSelect<true>;
+    'gallery-page': GalleryPageSelect<false> | GalleryPageSelect<true>;
+    'events-page': EventsPageSelect<false> | EventsPageSelect<true>;
     'admissions-page': AdmissionsPageSelect<false> | AdmissionsPageSelect<true>;
+    'contact-page': ContactPageSelect<false> | ContactPageSelect<true>;
+    'faq-page': FaqPageSelect<false> | FaqPageSelect<true>;
+    'privacy-page': PrivacyPageSelect<false> | PrivacyPageSelect<true>;
     'site-settings': SiteSettingsSelect<false> | SiteSettingsSelect<true>;
     offer: OfferSelect<false> | OfferSelect<true>;
   };
@@ -161,6 +175,66 @@ export interface UserAuthOperations {
   };
 }
 /**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "admissions".
+ */
+export interface Admission {
+  id: number;
+  parentName: string;
+  phone: string;
+  email?: string | null;
+  childName: string;
+  childDob: string;
+  className: string;
+  message?: string | null;
+  status: 'new' | 'contacted' | 'visited' | 'admitted' | 'closed';
+  /**
+   * Internal notes (not visible to parents).
+   */
+  notes?: string | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "visit-bookings".
+ */
+export interface VisitBooking {
+  id: number;
+  name: string;
+  phone: string;
+  date: string;
+  time: string;
+  children?: number | null;
+  status: 'new' | 'confirmed' | 'visited' | 'no-show' | 'cancelled';
+  /**
+   * Internal notes (not visible to parents).
+   */
+  notes?: string | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "messages".
+ */
+export interface Message {
+  id: number;
+  name: string;
+  phone: string;
+  email?: string | null;
+  message: string;
+  status: 'new' | 'replied' | 'closed';
+  /**
+   * Internal notes (not visible to parents).
+   */
+  notes?: string | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * One entry per class (Pre Play, Play, LKG, UKG, Day Care). Each has its own page at /programs/<url>.
+ *
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "programs".
  */
@@ -227,6 +301,7 @@ export interface Media {
   galleryCategory?: ('Classroom' | 'Events' | 'Art & Craft' | 'Play & Tours') | null;
   featuredOnHome?: boolean | null;
   galleryOrder?: number | null;
+  _objectKey?: string | null;
   updatedAt: string;
   createdAt: string;
   url?: string | null;
@@ -258,6 +333,8 @@ export interface Media {
   };
 }
 /**
+ * The 8 facility cards on the Home and Facilities pages.
+ *
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "facilities".
  */
@@ -291,6 +368,8 @@ export interface Facility {
   createdAt: string;
 }
 /**
+ * Chairman, Managing Director, Principal, teachers. Tick “Show message” to show them in “Our Leadership”.
+ *
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "team".
  */
@@ -313,6 +392,8 @@ export interface Team {
   createdAt: string;
 }
 /**
+ * Events and news. Tick “Show on Home page” to feature (up to 3).
+ *
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "events".
  */
@@ -361,6 +442,8 @@ export interface Testimonial {
   createdAt: string;
 }
 /**
+ * Questions and answers for the FAQ page. Tick “Show on Home page” to also show on Home.
+ *
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "faqs".
  */
@@ -377,64 +460,8 @@ export interface Faq {
   createdAt: string;
 }
 /**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "admissions".
- */
-export interface Admission {
-  id: number;
-  parentName: string;
-  phone: string;
-  email?: string | null;
-  childName: string;
-  childDob: string;
-  className: string;
-  message?: string | null;
-  status: 'new' | 'contacted' | 'visited' | 'admitted' | 'closed';
-  /**
-   * Internal notes (not visible to parents).
-   */
-  notes?: string | null;
-  updatedAt: string;
-  createdAt: string;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "visit-bookings".
- */
-export interface VisitBooking {
-  id: number;
-  name: string;
-  phone: string;
-  date: string;
-  time: string;
-  children?: number | null;
-  status: 'new' | 'confirmed' | 'visited' | 'no-show' | 'cancelled';
-  /**
-   * Internal notes (not visible to parents).
-   */
-  notes?: string | null;
-  updatedAt: string;
-  createdAt: string;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "messages".
- */
-export interface Message {
-  id: number;
-  name: string;
-  phone: string;
-  email?: string | null;
-  message: string;
-  status: 'new' | 'replied' | 'closed';
-  /**
-   * Internal notes (not visible to parents).
-   */
-  notes?: string | null;
-  updatedAt: string;
-  createdAt: string;
-}
-/**
+ * Staff who can log in. Only a Super Admin can add or remove users.
+ *
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "users".
  */
@@ -487,6 +514,8 @@ export interface Export {
     | number
     | boolean
     | null;
+  prefix?: string | null;
+  _objectKey?: string | null;
   updatedAt: string;
   createdAt: string;
   url?: string | null;
@@ -524,6 +553,8 @@ export interface Import {
       | boolean
       | null;
   };
+  prefix?: string | null;
+  _objectKey?: string | null;
   updatedAt: string;
   createdAt: string;
   url?: string | null;
@@ -653,6 +684,18 @@ export interface PayloadLockedDocument {
   id: number;
   document?:
     | ({
+        relationTo: 'admissions';
+        value: number | Admission;
+      } | null)
+    | ({
+        relationTo: 'visit-bookings';
+        value: number | VisitBooking;
+      } | null)
+    | ({
+        relationTo: 'messages';
+        value: number | Message;
+      } | null)
+    | ({
         relationTo: 'programs';
         value: number | Program;
       } | null)
@@ -679,18 +722,6 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'media';
         value: number | Media;
-      } | null)
-    | ({
-        relationTo: 'admissions';
-        value: number | Admission;
-      } | null)
-    | ({
-        relationTo: 'visit-bookings';
-        value: number | VisitBooking;
-      } | null)
-    | ({
-        relationTo: 'messages';
-        value: number | Message;
       } | null)
     | ({
         relationTo: 'users';
@@ -737,6 +768,52 @@ export interface PayloadMigration {
   batch?: number | null;
   updatedAt: string;
   createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "admissions_select".
+ */
+export interface AdmissionsSelect<T extends boolean = true> {
+  parentName?: T;
+  phone?: T;
+  email?: T;
+  childName?: T;
+  childDob?: T;
+  className?: T;
+  message?: T;
+  status?: T;
+  notes?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "visit-bookings_select".
+ */
+export interface VisitBookingsSelect<T extends boolean = true> {
+  name?: T;
+  phone?: T;
+  date?: T;
+  time?: T;
+  children?: T;
+  status?: T;
+  notes?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "messages_select".
+ */
+export interface MessagesSelect<T extends boolean = true> {
+  name?: T;
+  phone?: T;
+  email?: T;
+  message?: T;
+  status?: T;
+  notes?: T;
+  updatedAt?: T;
+  createdAt?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -850,6 +927,7 @@ export interface MediaSelect<T extends boolean = true> {
   galleryCategory?: T;
   featuredOnHome?: T;
   galleryOrder?: T;
+  _objectKey?: T;
   updatedAt?: T;
   createdAt?: T;
   url?: T;
@@ -885,52 +963,6 @@ export interface MediaSelect<T extends boolean = true> {
               filename?: T;
             };
       };
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "admissions_select".
- */
-export interface AdmissionsSelect<T extends boolean = true> {
-  parentName?: T;
-  phone?: T;
-  email?: T;
-  childName?: T;
-  childDob?: T;
-  className?: T;
-  message?: T;
-  status?: T;
-  notes?: T;
-  updatedAt?: T;
-  createdAt?: T;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "visit-bookings_select".
- */
-export interface VisitBookingsSelect<T extends boolean = true> {
-  name?: T;
-  phone?: T;
-  date?: T;
-  time?: T;
-  children?: T;
-  status?: T;
-  notes?: T;
-  updatedAt?: T;
-  createdAt?: T;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "messages_select".
- */
-export interface MessagesSelect<T extends boolean = true> {
-  name?: T;
-  phone?: T;
-  email?: T;
-  message?: T;
-  status?: T;
-  notes?: T;
-  updatedAt?: T;
-  createdAt?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -973,6 +1005,8 @@ export interface ExportsSelect<T extends boolean = true> {
   fields?: T;
   collectionSlug?: T;
   where?: T;
+  prefix?: T;
+  _objectKey?: T;
   updatedAt?: T;
   createdAt?: T;
   url?: T;
@@ -1003,6 +1037,8 @@ export interface ImportsSelect<T extends boolean = true> {
         issues?: T;
         issueDetails?: T;
       };
+  prefix?: T;
+  _objectKey?: T;
   updatedAt?: T;
   createdAt?: T;
   url?: T;
@@ -1087,6 +1123,8 @@ export interface PayloadMigrationsSelect<T extends boolean = true> {
   createdAt?: T;
 }
 /**
+ * Everything on the Home page. Use the tabs below; click “Live Preview” (top right) to see changes as you type.
+ *
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "home-page".
  */
@@ -1102,6 +1140,9 @@ export interface HomePage {
           id?: string | null;
         }[]
       | null;
+    primaryCta?: string | null;
+    secondaryCta?: string | null;
+    classesLine?: string | null;
     image: number | Media;
     mini: number | Media;
     miniCaption?: string | null;
@@ -1195,15 +1236,75 @@ export interface HomePage {
         id?: string | null;
       }[]
     | null;
+  headings?: {
+    facilities?: {
+      eyebrow?: string | null;
+      title?: string | null;
+      text?: string | null;
+    };
+    routine?: {
+      eyebrow?: string | null;
+      title?: string | null;
+    };
+    leadership?: {
+      eyebrow?: string | null;
+      title?: string | null;
+    };
+    gallery?: {
+      eyebrow?: string | null;
+      title?: string | null;
+      text?: string | null;
+    };
+    events?: {
+      eyebrow?: string | null;
+      title?: string | null;
+    };
+    testimonials?: {
+      eyebrow?: string | null;
+      title?: string | null;
+    };
+    faq?: {
+      eyebrow?: string | null;
+      title?: string | null;
+    };
+  };
+  /**
+   * What Google and Facebook/WhatsApp previews show for this page.
+   */
+  seo?: {
+    /**
+     * Shown in the browser tab and Google results (keep under 60 characters).
+     */
+    title?: string | null;
+    /**
+     * 1–2 sentences for Google results (about 150 characters).
+     */
+    description?: string | null;
+    image?: (number | null) | Media;
+  };
   updatedAt?: string | null;
   createdAt?: string | null;
 }
 /**
+ * Story, mission, vision and values. Leadership messages are edited in 🧩 Page Content → Teachers & Leadership.
+ *
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "about-page".
  */
 export interface AboutPage {
   id: number;
+  /**
+   * The sky-blue banner at the top of this page.
+   */
+  banner?: {
+    eyebrow?: string | null;
+    title?: string | null;
+    text?: string | null;
+  };
+  storyHeading?: {
+    eyebrow?: string | null;
+    title?: string | null;
+  };
   story?:
     | {
         text: string;
@@ -1213,6 +1314,10 @@ export interface AboutPage {
   storyImage?: (number | null) | Media;
   mission: string;
   vision: string;
+  valuesHeading?: {
+    eyebrow?: string | null;
+    title?: string | null;
+  };
   values?:
     | {
         title: string;
@@ -1237,15 +1342,188 @@ export interface AboutPage {
         id?: string | null;
       }[]
     | null;
+  /**
+   * What Google and Facebook/WhatsApp previews show for this page.
+   */
+  seo?: {
+    /**
+     * Shown in the browser tab and Google results (keep under 60 characters).
+     */
+    title?: string | null;
+    /**
+     * 1–2 sentences for Google results (about 150 characters).
+     */
+    description?: string | null;
+    image?: (number | null) | Media;
+  };
   updatedAt?: string | null;
   createdAt?: string | null;
 }
 /**
+ * The /programs page and the headings used on every class page. The classes themselves are in “Programs & Classes”.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "programs-page".
+ */
+export interface ProgramsPage {
+  id: number;
+  /**
+   * The sky-blue banner at the top of this page.
+   */
+  banner?: {
+    eyebrow?: string | null;
+    title?: string | null;
+    text?: string | null;
+  };
+  aboutHeading?: {
+    eyebrow?: string | null;
+    title?: string | null;
+  };
+  learnHeading?: {
+    eyebrow?: string | null;
+    title?: string | null;
+  };
+  applyHeading?: {
+    eyebrow?: string | null;
+    title?: string | null;
+    text?: string | null;
+  };
+  /**
+   * What Google and Facebook/WhatsApp previews show for this page.
+   */
+  seo?: {
+    /**
+     * Shown in the browser tab and Google results (keep under 60 characters).
+     */
+    title?: string | null;
+    /**
+     * 1–2 sentences for Google results (about 150 characters).
+     */
+    description?: string | null;
+    image?: (number | null) | Media;
+  };
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
+ * Banner and SEO for /facilities. Facilities themselves are in 🧩 Page Content → Facilities.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "facilities-page".
+ */
+export interface FacilitiesPage {
+  id: number;
+  /**
+   * The sky-blue banner at the top of this page.
+   */
+  banner?: {
+    eyebrow?: string | null;
+    title?: string | null;
+    text?: string | null;
+  };
+  /**
+   * What Google and Facebook/WhatsApp previews show for this page.
+   */
+  seo?: {
+    /**
+     * Shown in the browser tab and Google results (keep under 60 characters).
+     */
+    title?: string | null;
+    /**
+     * 1–2 sentences for Google results (about 150 characters).
+     */
+    description?: string | null;
+    image?: (number | null) | Media;
+  };
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
+ * Banner and SEO for /gallery. Photos are added in 🖼️ Photos & Files (tick “Show in gallery”).
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "gallery-page".
+ */
+export interface GalleryPage {
+  id: number;
+  /**
+   * The sky-blue banner at the top of this page.
+   */
+  banner?: {
+    eyebrow?: string | null;
+    title?: string | null;
+    text?: string | null;
+  };
+  /**
+   * What Google and Facebook/WhatsApp previews show for this page.
+   */
+  seo?: {
+    /**
+     * Shown in the browser tab and Google results (keep under 60 characters).
+     */
+    title?: string | null;
+    /**
+     * 1–2 sentences for Google results (about 150 characters).
+     */
+    description?: string | null;
+    image?: (number | null) | Media;
+  };
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
+ * Banner and SEO for /events. Events are in 🧩 Page Content → Events & News.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "events-page".
+ */
+export interface EventsPage {
+  id: number;
+  /**
+   * The sky-blue banner at the top of this page.
+   */
+  banner?: {
+    eyebrow?: string | null;
+    title?: string | null;
+    text?: string | null;
+  };
+  /**
+   * What Google and Facebook/WhatsApp previews show for this page.
+   */
+  seo?: {
+    /**
+     * Shown in the browser tab and Google results (keep under 60 characters).
+     */
+    title?: string | null;
+    /**
+     * 1–2 sentences for Google results (about 150 characters).
+     */
+    description?: string | null;
+    image?: (number | null) | Media;
+  };
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
+ * Steps, documents and fees text on /admissions.
+ *
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "admissions-page".
  */
 export interface AdmissionsPage {
   id: number;
+  /**
+   * The sky-blue banner at the top of this page.
+   */
+  banner?: {
+    eyebrow?: string | null;
+    title?: string | null;
+    text?: string | null;
+  };
+  stepsHeading?: {
+    eyebrow?: string | null;
+    title?: string | null;
+  };
   steps?:
     | {
         title: string;
@@ -1260,11 +1538,151 @@ export interface AdmissionsPage {
       }[]
     | null;
   feeNote?: string | null;
+  formHeading?: {
+    eyebrow?: string | null;
+    title?: string | null;
+    text?: string | null;
+  };
   formImage?: (number | null) | Media;
+  /**
+   * What Google and Facebook/WhatsApp previews show for this page.
+   */
+  seo?: {
+    /**
+     * Shown in the browser tab and Google results (keep under 60 characters).
+     */
+    title?: string | null;
+    /**
+     * 1–2 sentences for Google results (about 150 characters).
+     */
+    description?: string | null;
+    image?: (number | null) | Media;
+  };
   updatedAt?: string | null;
   createdAt?: string | null;
 }
 /**
+ * Headings on /contact. Phone, address and hours are in ⚙️ Settings → Site Settings.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "contact-page".
+ */
+export interface ContactPage {
+  id: number;
+  /**
+   * The sky-blue banner at the top of this page.
+   */
+  banner?: {
+    eyebrow?: string | null;
+    title?: string | null;
+    text?: string | null;
+  };
+  messageHeading?: {
+    eyebrow?: string | null;
+    title?: string | null;
+  };
+  locationHeading?: {
+    eyebrow?: string | null;
+    title?: string | null;
+  };
+  visitHeading?: {
+    eyebrow?: string | null;
+    title?: string | null;
+    text?: string | null;
+  };
+  /**
+   * What Google and Facebook/WhatsApp previews show for this page.
+   */
+  seo?: {
+    /**
+     * Shown in the browser tab and Google results (keep under 60 characters).
+     */
+    title?: string | null;
+    /**
+     * 1–2 sentences for Google results (about 150 characters).
+     */
+    description?: string | null;
+    image?: (number | null) | Media;
+  };
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
+ * Banner and SEO for /faq. Questions are in 🧩 Page Content → FAQs.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "faq-page".
+ */
+export interface FaqPage {
+  id: number;
+  /**
+   * The sky-blue banner at the top of this page.
+   */
+  banner?: {
+    eyebrow?: string | null;
+    title?: string | null;
+    text?: string | null;
+  };
+  /**
+   * What Google and Facebook/WhatsApp previews show for this page.
+   */
+  seo?: {
+    /**
+     * Shown in the browser tab and Google results (keep under 60 characters).
+     */
+    title?: string | null;
+    /**
+     * 1–2 sentences for Google results (about 150 characters).
+     */
+    description?: string | null;
+    image?: (number | null) | Media;
+  };
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
+ * The /privacy page.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "privacy-page".
+ */
+export interface PrivacyPage {
+  id: number;
+  /**
+   * The sky-blue banner at the top of this page.
+   */
+  banner?: {
+    eyebrow?: string | null;
+    title?: string | null;
+    text?: string | null;
+  };
+  sections?:
+    | {
+        heading: string;
+        text: string;
+        id?: string | null;
+      }[]
+    | null;
+  /**
+   * What Google and Facebook/WhatsApp previews show for this page.
+   */
+  seo?: {
+    /**
+     * Shown in the browser tab and Google results (keep under 60 characters).
+     */
+    title?: string | null;
+    /**
+     * 1–2 sentences for Google results (about 150 characters).
+     */
+    description?: string | null;
+    image?: (number | null) | Media;
+  };
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
+ * School name, logo, phone, address, social links and analytics — used across the whole website.
+ *
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "site-settings".
  */
@@ -1274,6 +1692,11 @@ export interface SiteSetting {
   shortName: string;
   tagline: string;
   motto: string;
+  /**
+   * Round logo with a transparent background (PNG). Leave empty to use the built-in logo.
+   */
+  logo?: (number | null) | Media;
+  footerAbout?: string | null;
   hours?: string | null;
   /**
    * e.g. 01901 641 644
@@ -1295,6 +1718,12 @@ export interface SiteSetting {
     city: string;
   };
   mapQuery: string;
+  visitTimes?:
+    | {
+        text: string;
+        id?: string | null;
+      }[]
+    | null;
   facebook?: string | null;
   youtube?: string | null;
   seoTitle?: string | null;
@@ -1308,7 +1737,7 @@ export interface SiteSetting {
   createdAt?: string | null;
 }
 /**
- * The colored bar at the very top of the website.
+ * The admission offer: top color bar, the round sticker on the Home photo, and the big admission banner.
  *
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "offer".
@@ -1316,10 +1745,26 @@ export interface SiteSetting {
 export interface Offer {
   id: number;
   enabled?: boolean | null;
+  /**
+   * e.g. Admission Open 2026 — Get 50% OFF!
+   */
   text: string;
   cta?: string | null;
   href?: string | null;
   endDate?: string | null;
+  /**
+   * e.g. 50%
+   */
+  stickerTop?: string | null;
+  /**
+   * e.g. OFF
+   */
+  stickerBottom?: string | null;
+  /**
+   * e.g. Hurry, seats are limited!
+   */
+  bannerEyebrow?: string | null;
+  bannerImage?: (number | null) | Media;
   updatedAt?: string | null;
   createdAt?: string | null;
 }
@@ -1340,6 +1785,9 @@ export interface HomePageSelect<T extends boolean = true> {
               text?: T;
               id?: T;
             };
+        primaryCta?: T;
+        secondaryCta?: T;
+        classesLine?: T;
         image?: T;
         mini?: T;
         miniCaption?: T;
@@ -1404,6 +1852,61 @@ export interface HomePageSelect<T extends boolean = true> {
         color?: T;
         id?: T;
       };
+  headings?:
+    | T
+    | {
+        facilities?:
+          | T
+          | {
+              eyebrow?: T;
+              title?: T;
+              text?: T;
+            };
+        routine?:
+          | T
+          | {
+              eyebrow?: T;
+              title?: T;
+            };
+        leadership?:
+          | T
+          | {
+              eyebrow?: T;
+              title?: T;
+            };
+        gallery?:
+          | T
+          | {
+              eyebrow?: T;
+              title?: T;
+              text?: T;
+            };
+        events?:
+          | T
+          | {
+              eyebrow?: T;
+              title?: T;
+            };
+        testimonials?:
+          | T
+          | {
+              eyebrow?: T;
+              title?: T;
+            };
+        faq?:
+          | T
+          | {
+              eyebrow?: T;
+              title?: T;
+            };
+      };
+  seo?:
+    | T
+    | {
+        title?: T;
+        description?: T;
+        image?: T;
+      };
   updatedAt?: T;
   createdAt?: T;
   globalType?: T;
@@ -1413,6 +1916,19 @@ export interface HomePageSelect<T extends boolean = true> {
  * via the `definition` "about-page_select".
  */
 export interface AboutPageSelect<T extends boolean = true> {
+  banner?:
+    | T
+    | {
+        eyebrow?: T;
+        title?: T;
+        text?: T;
+      };
+  storyHeading?:
+    | T
+    | {
+        eyebrow?: T;
+        title?: T;
+      };
   story?:
     | T
     | {
@@ -1422,6 +1938,12 @@ export interface AboutPageSelect<T extends boolean = true> {
   storyImage?: T;
   mission?: T;
   vision?: T;
+  valuesHeading?:
+    | T
+    | {
+        eyebrow?: T;
+        title?: T;
+      };
   values?:
     | T
     | {
@@ -1430,6 +1952,124 @@ export interface AboutPageSelect<T extends boolean = true> {
         icon?: T;
         color?: T;
         id?: T;
+      };
+  seo?:
+    | T
+    | {
+        title?: T;
+        description?: T;
+        image?: T;
+      };
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "programs-page_select".
+ */
+export interface ProgramsPageSelect<T extends boolean = true> {
+  banner?:
+    | T
+    | {
+        eyebrow?: T;
+        title?: T;
+        text?: T;
+      };
+  aboutHeading?:
+    | T
+    | {
+        eyebrow?: T;
+        title?: T;
+      };
+  learnHeading?:
+    | T
+    | {
+        eyebrow?: T;
+        title?: T;
+      };
+  applyHeading?:
+    | T
+    | {
+        eyebrow?: T;
+        title?: T;
+        text?: T;
+      };
+  seo?:
+    | T
+    | {
+        title?: T;
+        description?: T;
+        image?: T;
+      };
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "facilities-page_select".
+ */
+export interface FacilitiesPageSelect<T extends boolean = true> {
+  banner?:
+    | T
+    | {
+        eyebrow?: T;
+        title?: T;
+        text?: T;
+      };
+  seo?:
+    | T
+    | {
+        title?: T;
+        description?: T;
+        image?: T;
+      };
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "gallery-page_select".
+ */
+export interface GalleryPageSelect<T extends boolean = true> {
+  banner?:
+    | T
+    | {
+        eyebrow?: T;
+        title?: T;
+        text?: T;
+      };
+  seo?:
+    | T
+    | {
+        title?: T;
+        description?: T;
+        image?: T;
+      };
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "events-page_select".
+ */
+export interface EventsPageSelect<T extends boolean = true> {
+  banner?:
+    | T
+    | {
+        eyebrow?: T;
+        title?: T;
+        text?: T;
+      };
+  seo?:
+    | T
+    | {
+        title?: T;
+        description?: T;
+        image?: T;
       };
   updatedAt?: T;
   createdAt?: T;
@@ -1440,6 +2080,19 @@ export interface AboutPageSelect<T extends boolean = true> {
  * via the `definition` "admissions-page_select".
  */
 export interface AdmissionsPageSelect<T extends boolean = true> {
+  banner?:
+    | T
+    | {
+        eyebrow?: T;
+        title?: T;
+        text?: T;
+      };
+  stepsHeading?:
+    | T
+    | {
+        eyebrow?: T;
+        title?: T;
+      };
   steps?:
     | T
     | {
@@ -1454,7 +2107,116 @@ export interface AdmissionsPageSelect<T extends boolean = true> {
         id?: T;
       };
   feeNote?: T;
+  formHeading?:
+    | T
+    | {
+        eyebrow?: T;
+        title?: T;
+        text?: T;
+      };
   formImage?: T;
+  seo?:
+    | T
+    | {
+        title?: T;
+        description?: T;
+        image?: T;
+      };
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "contact-page_select".
+ */
+export interface ContactPageSelect<T extends boolean = true> {
+  banner?:
+    | T
+    | {
+        eyebrow?: T;
+        title?: T;
+        text?: T;
+      };
+  messageHeading?:
+    | T
+    | {
+        eyebrow?: T;
+        title?: T;
+      };
+  locationHeading?:
+    | T
+    | {
+        eyebrow?: T;
+        title?: T;
+      };
+  visitHeading?:
+    | T
+    | {
+        eyebrow?: T;
+        title?: T;
+        text?: T;
+      };
+  seo?:
+    | T
+    | {
+        title?: T;
+        description?: T;
+        image?: T;
+      };
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "faq-page_select".
+ */
+export interface FaqPageSelect<T extends boolean = true> {
+  banner?:
+    | T
+    | {
+        eyebrow?: T;
+        title?: T;
+        text?: T;
+      };
+  seo?:
+    | T
+    | {
+        title?: T;
+        description?: T;
+        image?: T;
+      };
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "privacy-page_select".
+ */
+export interface PrivacyPageSelect<T extends boolean = true> {
+  banner?:
+    | T
+    | {
+        eyebrow?: T;
+        title?: T;
+        text?: T;
+      };
+  sections?:
+    | T
+    | {
+        heading?: T;
+        text?: T;
+        id?: T;
+      };
+  seo?:
+    | T
+    | {
+        title?: T;
+        description?: T;
+        image?: T;
+      };
   updatedAt?: T;
   createdAt?: T;
   globalType?: T;
@@ -1468,6 +2230,8 @@ export interface SiteSettingsSelect<T extends boolean = true> {
   shortName?: T;
   tagline?: T;
   motto?: T;
+  logo?: T;
+  footerAbout?: T;
   hours?: T;
   phoneDisplay?: T;
   phone?: T;
@@ -1482,6 +2246,12 @@ export interface SiteSettingsSelect<T extends boolean = true> {
         city?: T;
       };
   mapQuery?: T;
+  visitTimes?:
+    | T
+    | {
+        text?: T;
+        id?: T;
+      };
   facebook?: T;
   youtube?: T;
   seoTitle?: T;
@@ -1502,6 +2272,10 @@ export interface OfferSelect<T extends boolean = true> {
   cta?: T;
   href?: T;
   endDate?: T;
+  stickerTop?: T;
+  stickerBottom?: T;
+  bannerEyebrow?: T;
+  bannerImage?: T;
   updatedAt?: T;
   createdAt?: T;
   globalType?: T;
@@ -1526,6 +2300,9 @@ export interface TaskCreateCollectionExport {
     name: string;
     batchSize?: number | null;
     collectionSlug:
+      | 'admissions'
+      | 'visit-bookings'
+      | 'messages'
       | 'programs'
       | 'facilities'
       | 'team'
@@ -1533,9 +2310,6 @@ export interface TaskCreateCollectionExport {
       | 'testimonials'
       | 'faqs'
       | 'media'
-      | 'admissions'
-      | 'visit-bookings'
-      | 'messages'
       | 'users'
       | 'exports'
       | 'imports';

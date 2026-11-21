@@ -4,6 +4,7 @@ import "./globals.css";
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
 import { FloatingActions } from "@/components/layout/FloatingActions";
+import { LivePreviewRefresh } from "@/components/layout/LivePreviewRefresh";
 import { getOffer, getPrograms, getSite } from "@/lib/cms";
 
 const fredoka = Fredoka({ subsets: ["latin"], variable: "--font-fredoka", weight: ["400", "500", "600", "700"] });
@@ -47,6 +48,7 @@ export default async function FrontendLayout({ children }: { children: React.Rea
         <main id="main" className="overflow-x-clip">{children}</main>
         <Footer site={site} programs={programs} />
         <FloatingActions site={site} />
+        <LivePreviewRefresh />
         <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
         {site.ga4Id && (
           <>

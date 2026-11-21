@@ -15,7 +15,8 @@ import { Users } from "./payload/collections/Users";
 import { Media } from "./payload/collections/Media";
 import { Events, Facilities, Faqs, Programs, Team, Testimonials } from "./payload/collections/content";
 import { Admissions, Messages, VisitBookings } from "./payload/collections/leads";
-import { AboutPage, AdmissionsPage, HomePage, Offer, SiteSettings } from "./payload/globals";
+import { allGlobals } from "./payload/globals";
+import { collectionPath, PAGE_PATHS } from "./payload/groups";
 
 const dirname = path.dirname(fileURLToPath(import.meta.url));
 
@@ -46,16 +47,40 @@ export default buildConfig({
     user: Users.slug,
     meta: { titleSuffix: " · Hello Kids Admin", icons: [{ url: "/logo-256.png" }] },
     importMap: { baseDir: path.resolve(dirname) },
+    components: {
+      graphics: { Logo: "/payload/admin/Graphics#Logo", Icon: "/payload/admin/Graphics#Icon" },
+      beforeDashboard: ["/payload/admin/Welcome#Welcome"],
+      afterNavLinks: ["/payload/admin/NavLinks#NavLinks"],
+    },
+    // Side-by-side preview of the real page while editing (refreshes on every save).
+    livePreview: {
+      url: ({ data, collectionConfig, globalConfig }) =>
+        globalConfig
+          ? PAGE_PATHS[globalConfig.slug] ?? "/"
+          : collectionPath(collectionConfig?.slug ?? "", data as Record<string, unknown>),
+      globals: Object.keys(PAGE_PATHS),
+      collections: ["programs", "facilities", "team", "events", "faqs", "testimonials"],
+      breakpoints: [
+        { label: "Mobile", name: "mobile", width: 390, height: 844 },
+        { label: "Tablet", name: "tablet", width: 768, height: 1024 },
+        { label: "Desktop", name: "desktop", width: 1366, height: 900 },
+      ],
+    },
   },
+  // Menu order follows this order (see ./payload/groups.ts).
   collections: [
-    // Content
-    Programs, Facilities, Team, Events, Testimonials, Faqs, Media,
-    // Leads
+    // 📥 Parent Leads
     Admissions, VisitBookings, Messages,
-    // Settings
+    // 🏫 Website Pages (classes appear here, page settings follow from globals)
+    Programs,
+    // 🧩 Page Content
+    Facilities, Team, Events, Testimonials, Faqs,
+    // 🖼️ Photos & Files
+    Media,
+    // ⚙️ Settings
     Users,
   ],
-  globals: [HomePage, AboutPage, AdmissionsPage, SiteSettings, Offer],
+  globals: allGlobals,
   db,
   // Admin password-reset emails. Without a key, emails are printed to the server console.
   email: process.env.RESEND_API_KEY

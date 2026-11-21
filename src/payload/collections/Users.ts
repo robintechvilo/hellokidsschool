@@ -1,10 +1,11 @@
 import type { CollectionConfig } from "payload";
 import { adminsOrSelf, isSuperAdmin, superAdminField, superAdmins } from "../access";
+import { GROUPS } from "../groups";
 
 export const Users: CollectionConfig = {
   slug: "users",
   labels: { singular: "User", plural: "Users" },
-  admin: { useAsTitle: "name", defaultColumns: ["name", "email", "role"], group: "Settings" },
+  admin: { useAsTitle: "name", defaultColumns: ["name", "email", "role"], group: GROUPS.settings, description: "Staff who can log in. Only a Super Admin can add or remove users." },
   auth: {
     maxLoginAttempts: 5,
     lockTime: 15 * 60 * 1000,

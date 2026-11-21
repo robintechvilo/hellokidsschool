@@ -1,6 +1,7 @@
 import type { CollectionConfig } from "payload";
 import { anyone, staff } from "../access";
 import { contentHooks } from "../hooks";
+import { GROUPS } from "../groups";
 import { mediaStaticDir } from "../env";
 
 export const galleryCategoryOptions = ["Classroom", "Events", "Art & Craft", "Play & Tours"];
@@ -13,7 +14,7 @@ export const Media: CollectionConfig = {
   slug: "media",
   labels: { singular: "Media", plural: "Media & Gallery" },
   admin: {
-    group: "Content",
+    group: GROUPS.media,
     defaultColumns: ["filename", "alt", "showInGallery", "galleryCategory", "updatedAt"],
     description: "Upload photos once — every size is created automatically. Tick 'Show in gallery' to add a photo to the website gallery.",
   },

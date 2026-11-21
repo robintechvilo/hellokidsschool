@@ -2,23 +2,20 @@ import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import { ArrowRight, Check } from "lucide-react";
-import { getOffer, getPrograms, getSite } from "@/lib/cms";
+import { getOffer, getPage, getPrograms, getSite, pageMetadata } from "@/lib/cms";
 import { bg, onBg, softBg, text } from "@/lib/colors";
 import { PageHero } from "@/components/ui/PageHero";
 import { Reveal } from "@/components/ui/Reveal";
 import { AdmissionCTA } from "@/components/sections/AdmissionCTA";
 
-export const metadata: Metadata = {
-  title: "Programs — Pre Play, Play, LKG, UKG & Day Care",
-  description: "English Medium & English Version programs at Hello Kids: Pre Play, Play, LKG, UKG and Day Care in Mirpur, Dhaka.",
-};
+export const generateMetadata = (): Promise<Metadata> => pageMetadata("programs");
 
 export default async function ProgramsPage() {
+  const page = await getPage("programs");
   const [programs, site, offer] = await Promise.all([getPrograms(), getSite(), getOffer()]);
   return (
     <>
-      <PageHero eyebrow="Learning through play" title="Our Programs" crumbs={[{ label: "Programs" }]}
-        text="From the very first day of Pre Play to UKG graduation — plus a caring Day Care for working parents." />
+      <PageHero eyebrow={page.banner.eyebrow} title={page.banner.title} text={page.banner.text || undefined} crumbs={[{ label: "Programs" }]} />
       <section className="py-16 sm:py-20">
         <div className="container-x space-y-10">
           {programs.map((p, i) => (

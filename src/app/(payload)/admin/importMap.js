@@ -12,6 +12,10 @@ import { ExportPreview as ExportPreview_cdf7e044479f899a31f804427d568b36 } from 
 import { ExportSaveButton as ExportSaveButton_cdf7e044479f899a31f804427d568b36 } from '@payloadcms/plugin-import-export/rsc'
 import { ImportPreview as ImportPreview_cdf7e044479f899a31f804427d568b36 } from '@payloadcms/plugin-import-export/rsc'
 import { ImportSaveButton as ImportSaveButton_cdf7e044479f899a31f804427d568b36 } from '@payloadcms/plugin-import-export/rsc'
+import { Icon as Icon_d2d703bab85bdd7569de161840d879cf } from '../../../payload/admin/Graphics'
+import { Logo as Logo_d2d703bab85bdd7569de161840d879cf } from '../../../payload/admin/Graphics'
+import { NavLinks as NavLinks_f9e5d63bd5735b9847c8a8f20a8778e5 } from '../../../payload/admin/NavLinks'
+import { Welcome as Welcome_268602be27013f47d0feddbadd09d462 } from '../../../payload/admin/Welcome'
 import { ImportExportProvider as ImportExportProvider_cdf7e044479f899a31f804427d568b36 } from '@payloadcms/plugin-import-export/rsc'
 import { CollectionCards as CollectionCards_f9c02e79a4aed9a3924487c0cd4cafb1 } from '@payloadcms/next/rsc'
 import { VercelBlobClientUploadHandler as VercelBlobClientUploadHandler_16c82c5e25f430251a3e3ba57219ff4e } from '@payloadcms/storage-vercel-blob/client'
@@ -33,6 +37,10 @@ export const importMap = {
   "@payloadcms/plugin-import-export/rsc#ExportSaveButton": ExportSaveButton_cdf7e044479f899a31f804427d568b36,
   "@payloadcms/plugin-import-export/rsc#ImportPreview": ImportPreview_cdf7e044479f899a31f804427d568b36,
   "@payloadcms/plugin-import-export/rsc#ImportSaveButton": ImportSaveButton_cdf7e044479f899a31f804427d568b36,
+  "/payload/admin/Graphics#Icon": Icon_d2d703bab85bdd7569de161840d879cf,
+  "/payload/admin/Graphics#Logo": Logo_d2d703bab85bdd7569de161840d879cf,
+  "/payload/admin/NavLinks#NavLinks": NavLinks_f9e5d63bd5735b9847c8a8f20a8778e5,
+  "/payload/admin/Welcome#Welcome": Welcome_268602be27013f47d0feddbadd09d462,
   "@payloadcms/plugin-import-export/rsc#ImportExportProvider": ImportExportProvider_cdf7e044479f899a31f804427d568b36,
   "@payloadcms/next/rsc#CollectionCards": CollectionCards_f9c02e79a4aed9a3924487c0cd4cafb1,
   "@payloadcms/storage-vercel-blob/client#VercelBlobClientUploadHandler": VercelBlobClientUploadHandler_16c82c5e25f430251a3e3ba57219ff4e,

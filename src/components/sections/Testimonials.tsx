@@ -1,4 +1,5 @@
 import Image from "next/image";
+import { homeHeadings, type Heading } from "@/content/labels";
 import { Quote, Star } from "lucide-react";
 import type { TestimonialData } from "@/lib/cms";
 import { SectionTitle } from "@/components/ui/SectionTitle";
@@ -7,12 +8,12 @@ import { Reveal } from "@/components/ui/Reveal";
 const rings = ["bg-pink", "bg-orange", "bg-teal", "bg-green", "bg-purple"];
 
 /** Renders only when real testimonials exist in the Admin Panel. */
-export function Testimonials({ items }: { items: TestimonialData[] }) {
+export function Testimonials({ items, heading = homeHeadings.testimonials }: { items: TestimonialData[]; heading?: Heading }) {
   if (!items.length) return null;
   return (
     <section className="bg-sky-light py-16 sm:py-24">
       <div className="container-x">
-        <SectionTitle eyebrow="Happy parents" title="What Parents Say" />
+        <SectionTitle eyebrow={heading.eyebrow} title={heading.title} text={heading.text || undefined} />
         <div className="mt-12 flex snap-x snap-mandatory gap-6 overflow-x-auto pb-4 [scrollbar-width:thin] md:grid md:grid-cols-3 md:overflow-visible">
           {items.map((t, i) => (
             <Reveal key={t.name + i} delay={(i % 3) * 0.08} className="w-[85%] shrink-0 snap-center md:w-auto">

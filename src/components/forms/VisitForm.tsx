@@ -6,9 +6,8 @@ import { visitSchema, type VisitInput } from "@/lib/validators";
 import { submitVisit } from "@/app/actions";
 import { FormError, FormSuccess, Honeypot, Input, Select, SubmitButton } from "./Fields";
 
-const times = ["Morning (9–11 AM)", "Midday (11 AM–1 PM)", "Afternoon (2–4 PM)"] as const;
 
-export function VisitForm() {
+export function VisitForm({ times }: { times: string[] }) {
   const [pending, start] = useTransition();
   const [done, setDone] = useState(false);
   const [serverError, setServerError] = useState<string>();

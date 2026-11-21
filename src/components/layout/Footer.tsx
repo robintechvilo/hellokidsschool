@@ -16,13 +16,13 @@ export function Footer({ site, programs }: { site: SiteData; programs: ProgramDa
       <div className="container-x grid gap-10 pb-10 pt-10 md:grid-cols-2 lg:grid-cols-[1.3fr_0.8fr_0.8fr_1.4fr]">
         <div>
           <div className="flex items-center gap-3">
-            <Image src="/logo-256.png" alt="" width={72} height={72} className="size-18 rounded-full bg-white" />
+            <Image src={site.logo?.src ?? "/logo-256.png"} alt="" width={72} height={72} className="size-18 rounded-full bg-white" />
             <div>
               <p className="font-display text-2xl font-bold text-white">Hello Kids</p>
               <p className="font-display text-sm text-yellow">Pre-School &amp; Day Care</p>
             </div>
           </div>
-          <p className="mt-4 max-w-xs">An English Medium &amp; English Version pre-school in Mirpur, Dhaka, where little ones play, learn and grow.</p>
+          <p className="mt-4 max-w-xs">{site.footerAbout}</p>
           <p className="mt-3 font-script text-2xl text-yellow">{site.motto}</p>
           <div className="mt-4 flex gap-3">
             <a href={site.facebook || "#"} target="_blank" rel="noopener" aria-label="Facebook" className="grid size-10 place-items-center rounded-full bg-white/10 hover:bg-[#1877f2]"><FacebookIcon className="size-5" /></a>

@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { Clock, MapPin, Navigation, Phone } from "lucide-react";
-import { getSite } from "@/lib/cms";
+import { getPage, getSite, pageMetadata } from "@/lib/cms";
 import { PageHero } from "@/components/ui/PageHero";
 import { SectionTitle } from "@/components/ui/SectionTitle";
 import { Reveal } from "@/components/ui/Reveal";
@@ -8,12 +8,10 @@ import { ContactForm } from "@/components/forms/ContactForm";
 import { VisitForm } from "@/components/forms/VisitForm";
 import { FacebookIcon, WhatsAppIcon } from "@/components/ui/BrandIcons";
 
-export const metadata: Metadata = {
-  title: "Contact Us & Book a Visit",
-  description: "Visit Hello Kids Pre-School at 778 West Shewrapara, beside Metro Pillar 307, Mirpur, Dhaka-1216. Call or WhatsApp 01901 641 644.",
-};
+export const generateMetadata = (): Promise<Metadata> => pageMetadata("contact");
 
 export default async function ContactPage() {
+  const page = await getPage("contact");
   const site = await getSite();
   const mapSrc = `https://www.google.com/maps?q=${encodeURIComponent(site.mapQuery)}&output=embed`;
   const directions = `https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(site.mapQuery)}`;
@@ -26,8 +24,7 @@ export default async function ContactPage() {
 
   return (
     <>
-      <PageHero eyebrow="We'd love to hear from you" title="Contact Us" crumbs={[{ label: "Contact" }]}
-        text="Call, WhatsApp, send a message or book a campus visit — we're always happy to help." />
+      <PageHero eyebrow={page.banner.eyebrow} title={page.banner.title} text={page.banner.text || undefined} crumbs={[{ label: "Contact" }]} />
 
       <section className="py-14">
         <div className="container-x grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
@@ -47,13 +44,13 @@ export default async function ContactPage() {
       <section className="pb-16 sm:pb-24">
         <div className="container-x grid items-start gap-10 lg:grid-cols-2">
           <div>
-            <SectionTitle align="left" eyebrow="Send a message" title="Write to Us" />
+            <SectionTitle align="left" eyebrow={page.headings.message.eyebrow} title={page.headings.message.title} text={page.headings.message.text || undefined} />
             <Reveal className="mt-8 rounded-[2rem] bg-white p-6 shadow-[0_16px_40px_-20px_rgba(30,42,120,.5)] ring-1 ring-navy/5 sm:p-8">
               <ContactForm />
             </Reveal>
           </div>
           <div>
-            <SectionTitle align="left" eyebrow="Find us" title="Our Location" />
+            <SectionTitle align="left" eyebrow={page.headings.location.eyebrow} title={page.headings.location.title} text={page.headings.location.text || undefined} />
             <Reveal className="mt-8 overflow-hidden rounded-[2rem] border-4 border-sky shadow-lg">
               <iframe title="Hello Kids on Google Maps" src={mapSrc} loading="lazy" referrerPolicy="no-referrer-when-downgrade" className="h-80 w-full" />
             </Reveal>
@@ -69,10 +66,9 @@ export default async function ContactPage() {
 
       <section id="visit" className="scroll-mt-24 bg-cream py-16 sm:py-24">
         <div className="container-x max-w-4xl">
-          <SectionTitle eyebrow="Come and see us" title="Book a Campus Visit"
-            text="See our classrooms, meet our teachers and ask anything. Pick a day and time that suits you." />
+          <SectionTitle eyebrow={page.headings.visit.eyebrow} title={page.headings.visit.title} text={page.headings.visit.text || undefined} />
           <Reveal className="mt-10 rounded-[2rem] bg-white p-6 shadow-[0_16px_40px_-20px_rgba(30,42,120,.5)] sm:p-10">
-            <VisitForm />
+            <VisitForm times={site.visitTimes} />
           </Reveal>
         </div>
       </section>

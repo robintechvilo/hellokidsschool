@@ -37,9 +37,7 @@ export const visitSchema = z.object({
   name: name("Name"),
   phone: bdPhone,
   date: z.string().trim().min(1, "Please choose a date"),
-  time: z.enum(["Morning (9–11 AM)", "Midday (11 AM–1 PM)", "Afternoon (2–4 PM)"], {
-    error: "Please choose a time",
-  }),
+  time: z.string().trim().min(1, "Please choose a time").max(80),
   children: z.coerce.number().int().min(1).max(5),
   website: honeypot,
 });

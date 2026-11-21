@@ -16,7 +16,7 @@ export function AdmissionCTA({ site, offer }: { site: SiteData; offer: OfferData
             <Star className="absolute left-8 top-8 size-6 text-yellow animate-float" />
             <Plane className="absolute right-[38%] top-8 hidden w-12 animate-float-slow lg:block" />
             <div className="relative">
-              <p className="font-script text-3xl text-yellow">{offer.enabled ? "Hurry, seats are limited!" : "We'd love to meet you"}</p>
+              <p className="font-script text-3xl text-yellow">{offer.enabled ? offer.bannerEyebrow : "We'd love to meet you"}</p>
               <h2 className="mt-2 text-4xl font-bold sm:text-5xl">{offer.enabled ? offer.text : "Admissions are open"}</h2>
               <p className="mt-4 max-w-lg text-lg text-white/85">
                 Visit our campus at {site.address.line1}{site.address.line2 ? ` (${site.address.line2})` : ""} and meet our teachers.
@@ -28,7 +28,7 @@ export function AdmissionCTA({ site, offer }: { site: SiteData; offer: OfferData
             </div>
             <div className="relative mx-auto w-full max-w-xs">
               <div className="absolute -inset-3 rotate-6 rounded-[2rem] bg-yellow" aria-hidden />
-              <Image src="/images/art-fish.webp" alt="Proud student showing her painting" width={800} height={600}
+              <Image src={offer.bannerImage.src} alt={offer.bannerImage.alt} width={offer.bannerImage.w} height={offer.bannerImage.h} sizes="320px"
                 className="relative aspect-square w-full rounded-[2rem] border-4 border-white object-cover" />
             </div>
           </div>

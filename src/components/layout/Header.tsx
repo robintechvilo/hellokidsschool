@@ -69,7 +69,7 @@ export function Header({ site, offer }: { site: SiteData; offer: OfferData }) {
       <header className={`sticky top-0 z-40 transition-all duration-300 ${scrolled ? "bg-white/95 shadow-[0_6px_24px_-12px_rgba(30,42,120,.35)] backdrop-blur" : "bg-white"}`}>
         <div className={`container-x flex items-center justify-between transition-all ${scrolled ? "h-16" : "h-20 lg:h-24"}`}>
           <Link href="/" className="flex items-center gap-3" aria-label={`${site.name} — home`}>
-            <Image src="/logo-256.png" alt="" width={256} height={256} priority
+            <Image src={site.logo?.src ?? "/logo-256.png"} alt="" width={256} height={256} priority
               className={`transition-all ${scrolled ? "size-12" : "size-14 lg:size-18"}`} />
             <span className="leading-none">
               <span className="block font-display text-2xl font-bold tracking-wide lg:text-[1.7rem]">
@@ -110,7 +110,7 @@ export function Header({ site, offer }: { site: SiteData; offer: OfferData }) {
             exit={{ clipPath: "circle(0% at 92% 4%)" }} transition={{ duration: 0.45, ease: "easeInOut" }}
             role="dialog" aria-modal="true" aria-label="Menu">
             <div className="container-x flex h-20 items-center justify-between">
-              <Image src="/logo-256.png" alt={site.name} width={56} height={56} className="size-14" />
+              <Image src={site.logo?.src ?? "/logo-256.png"} alt={site.name} width={56} height={56} className="size-14 rounded-full" />
               <button onClick={() => setOpen(false)} aria-label="Close menu" className="grid size-12 place-items-center rounded-2xl bg-white/10"><X /></button>
             </div>
             <nav className="container-x flex flex-1 flex-col gap-1 py-4" aria-label="Mobile">
@@ -124,7 +124,7 @@ export function Header({ site, offer }: { site: SiteData; offer: OfferData }) {
               ))}
             </nav>
             <div className="container-x grid gap-3 pb-8">
-              <Link href="/admissions" className="btn btn-orange w-full">Apply Now — 50% OFF</Link>
+              <Link href="/admissions" className="btn btn-orange w-full">{offer.enabled && offer.cta ? offer.cta : "Apply Now"}</Link>
               <a href={site.tel} className="btn btn-white w-full"><Phone className="size-5" />{site.phoneDisplay}</a>
             </div>
           </motion.div>

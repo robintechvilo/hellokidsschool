@@ -1,7 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { CalendarHeart, Sparkles } from "lucide-react";
-import type { HomeData } from "@/lib/cms";
+import type { HomeData, OfferData } from "@/lib/cms";
 import { Cloud, Pencil, Plane, Star, Blocks, Wave } from "@/components/ui/Decor";
 
 const letters: [string, string][] = [
@@ -9,7 +9,8 @@ const letters: [string, string][] = [
   [" ", ""], ["K", "text-pink"], ["I", "text-purple"], ["D", "text-yellow"], ["S", "text-orange"],
 ];
 
-export function Hero({ h, showOffer }: { h: HomeData["hero"]; showOffer: boolean }) {
+export function Hero({ h, offer }: { h: HomeData["hero"]; offer: Pick<OfferData, "enabled" | "stickerTop" | "stickerBottom" | "href"> }) {
+  const showOffer = offer.enabled;
   return (
     <section className="relative overflow-hidden bg-gradient-to-b from-sky to-sky-light">
       {/* drifting clouds */}
@@ -46,12 +47,12 @@ export function Hero({ h, showOffer }: { h: HomeData["hero"]; showOffer: boolean
           </div>
 
           <div style={{ animationDelay: "0.3s" }} className="rise mt-8 flex flex-wrap justify-center gap-4 lg:justify-start">
-            <Link href="/admissions" className="btn btn-orange !px-7 !py-4 text-lg"><Sparkles className="size-5" />Apply Now</Link>
-            <Link href="/contact#visit" className="btn btn-navy !px-7 !py-4 text-lg"><CalendarHeart className="size-5" />Book a Visit</Link>
+            <Link href="/admissions" className="btn btn-orange !px-7 !py-4 text-lg"><Sparkles className="size-5" />{h.primaryCta}</Link>
+            <Link href="/contact#visit" className="btn btn-navy !px-7 !py-4 text-lg"><CalendarHeart className="size-5" />{h.secondaryCta}</Link>
           </div>
 
           <div style={{ animationDelay: "0.4s" }} className="rise mt-6 flex items-center justify-center gap-2 font-display text-navy lg:justify-start">
-            <span className="text-lg font-semibold">Pre Play · Play · LKG · UKG · Day Care</span>
+            <span className="text-lg font-semibold">{h.classesLine}</span>
           </div>
         </div>
 
@@ -65,14 +66,14 @@ export function Hero({ h, showOffer }: { h: HomeData["hero"]; showOffer: boolean
 
           {/* 50% OFF sticker */}
           {showOffer && (
-          <Link href="/admissions" aria-label="Admission open — 50% off"
+          <Link href={offer.href || "/admissions"} aria-label={`${offer.stickerTop} ${offer.stickerBottom}`}
             className="absolute -left-3 -top-4 grid size-28 place-items-center sm:-left-8 sm:size-36">
             <svg viewBox="0 0 100 100" className="absolute inset-0 animate-spin-slow drop-shadow-lg" aria-hidden>
               <path fill="#e32d2d" d="M50 0l7 12 13-6 2 14 14-1-4 14 13 5-9 11 9 11-13 5 4 14-14-1-2 14-13-6-7 12-7-12-13 6-2-14-14 1 4-14-13-5 9-11-9-11 13-5-4-14 14 1 2-14 13 6z" />
             </svg>
             <span className="relative text-center font-display leading-none text-white">
-              <span className="block text-3xl font-bold sm:text-4xl">50%</span>
-              <span className="block text-lg font-bold text-yellow sm:text-xl">OFF</span>
+              <span className="block text-3xl font-bold sm:text-4xl">{offer.stickerTop}</span>
+              <span className="block text-lg font-bold text-yellow sm:text-xl">{offer.stickerBottom}</span>
             </span>
           </Link>
           )}

@@ -58,3 +58,35 @@ export const internalNotes: Field = {
   type: "textarea",
   admin: { position: "sidebar", description: "Internal notes (not visible to parents)." },
 };
+
+/** Small handwritten line + big title (+ optional paragraph) shown above a section. */
+export const headingGroup = (name: string, label: string, opts: { text?: boolean; description?: string } = {}): Field => ({
+  name,
+  label,
+  type: "group",
+  admin: { description: opts.description },
+  fields: [
+    { type: "row", fields: [
+      { name: "eyebrow", label: "Small handwritten line", type: "text", admin: { width: "40%" } },
+      { name: "title", label: "Title", type: "text", admin: { width: "60%" } },
+    ] },
+    ...(opts.text ? [{ name: "text", label: "Short text", type: "textarea" } as Field] : []),
+  ],
+});
+
+/** The colorful banner at the top of an inner page. */
+export const bannerGroup = (): Field =>
+  headingGroup("banner", "Top banner", { text: true, description: "The sky-blue banner at the top of this page." });
+
+/** Google / social sharing texts for one page. */
+export const seoGroup = (): Field => ({
+  name: "seo",
+  label: "Google & sharing (SEO)",
+  type: "group",
+  admin: { description: "What Google and Facebook/WhatsApp previews show for this page." },
+  fields: [
+    { name: "title", label: "Page title", type: "text", admin: { description: "Shown in the browser tab and Google results (keep under 60 characters)." } },
+    { name: "description", label: "Description", type: "textarea", maxLength: 300, admin: { description: "1–2 sentences for Google results (about 150 characters)." } },
+    { name: "image", label: "Share image", type: "upload", relationTo: "media" },
+  ],
+});

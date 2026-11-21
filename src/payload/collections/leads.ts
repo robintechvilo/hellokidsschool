@@ -1,10 +1,11 @@
 import type { CollectionConfig } from "payload";
 import { admins } from "../access";
 import { internalNotes, leadStatus } from "../fields";
+import { GROUPS } from "../groups";
 
 /** Leads are created only by the website forms (server-side, overrideAccess). */
 const leadAccess = { read: admins, update: admins, delete: admins, create: () => false };
-const leadAdmin = { group: "Leads", listSearchableFields: ["parentName", "name", "phone", "email", "childName"] };
+const leadAdmin = { group: GROUPS.leads, listSearchableFields: ["parentName", "name", "phone", "email", "childName"] };
 
 export const Admissions: CollectionConfig = {
   slug: "admissions",

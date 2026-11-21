@@ -1,19 +1,16 @@
 import type { Metadata } from "next";
-import { getGallery } from "@/lib/cms";
+import { getGallery, getPage, pageMetadata } from "@/lib/cms";
 import { PageHero } from "@/components/ui/PageHero";
 import { GalleryGrid } from "@/components/sections/GalleryGrid";
 
-export const metadata: Metadata = {
-  title: "Photo Gallery",
-  description: "Photos of classrooms, art & craft, events, birthdays and study tours at Hello Kids Pre-School & Day Care, Mirpur.",
-};
+export const generateMetadata = (): Promise<Metadata> => pageMetadata("gallery");
 
 export default async function GalleryPage() {
+  const page = await getPage("gallery");
   const items = await getGallery();
   return (
     <>
-      <PageHero eyebrow="Smiles everywhere" title="Photo Gallery" crumbs={[{ label: "Gallery" }]}
-        text="Moments of learning, laughter and celebration at Hello Kids." />
+      <PageHero eyebrow={page.banner.eyebrow} title={page.banner.title} text={page.banner.text || undefined} crumbs={[{ label: "Gallery" }]} />
       <section className="py-14 sm:py-20">
         <div className="container-x">
           <GalleryGrid items={items} />

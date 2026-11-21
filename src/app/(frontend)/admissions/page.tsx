@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Image from "next/image";
 import { FileText, Phone, Tag } from "lucide-react";
-import { getAdmissionsPage, getOffer, getPrograms, getSite } from "@/lib/cms";
+import { getAdmissionsPage, getOffer, getPage, getPrograms, getSite, pageMetadata } from "@/lib/cms";
 import { bg, onBg } from "@/lib/colors";
 import { PageHero } from "@/components/ui/PageHero";
 import { SectionTitle } from "@/components/ui/SectionTitle";
@@ -10,19 +10,16 @@ import { AdmissionForm } from "@/components/forms/AdmissionForm";
 import { WhatsAppIcon } from "@/components/ui/BrandIcons";
 import { Star } from "@/components/ui/Decor";
 
-export const metadata: Metadata = {
-  title: "Admissions 2026 — 50% OFF",
-  description: "Admission open at Hello Kids Pre-School & Day Care, Mirpur. Pre Play, Play, LKG, UKG and Day Care. Apply online or call 01901 641 644.",
-};
+export const generateMetadata = (): Promise<Metadata> => pageMetadata("admissions");
 
 const stepColors = ["pink", "orange", "green", "teal"] as const;
 
 export default async function AdmissionsPage() {
+  const page = await getPage("admissions");
   const [admissions, allPrograms, offer, site] = await Promise.all([getAdmissionsPage(), getPrograms(), getOffer(), getSite()]);
   return (
     <>
-      <PageHero eyebrow="Admission Open 2026" title="Admissions" crumbs={[{ label: "Admissions" }]}
-        text="Joining Hello Kids is easy! Follow four simple steps — we're happy to help at every one." />
+      <PageHero eyebrow={page.banner.eyebrow} title={page.banner.title} text={page.banner.text || undefined} crumbs={[{ label: "Admissions" }]} />
 
       {offer.enabled && (
         <section className="pt-12">
@@ -44,7 +41,7 @@ export default async function AdmissionsPage() {
 
       <section className="py-16 sm:py-20">
         <div className="container-x">
-          <SectionTitle eyebrow="Simple & friendly" title="How to Apply" />
+          <SectionTitle eyebrow={page.headings.steps.eyebrow} title={page.headings.steps.title} text={page.headings.steps.text || undefined} />
           <ol className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
             {admissions.steps.map((s, i) => (
               <li key={s.title}>
@@ -96,7 +93,7 @@ export default async function AdmissionsPage() {
       <section id="apply" className="scroll-mt-24 py-16 sm:py-24">
         <div className="container-x grid items-start gap-10 lg:grid-cols-[1fr_1.6fr]">
           <div className="lg:sticky lg:top-28">
-            <SectionTitle align="left" eyebrow="Apply online" title="Admission Inquiry Form" text="Fill in the form and our team will call you within one working day." />
+            <SectionTitle align="left" eyebrow={page.headings.form.eyebrow} title={page.headings.form.title} text={page.headings.form.text || undefined} />
             <Reveal delay={0.1} className="relative mt-8 hidden lg:block">
               <div className="absolute -inset-3 -rotate-3 rounded-[2rem] bg-teal" aria-hidden />
               {admissions.formImage && <Image src={admissions.formImage.src} alt={admissions.formImage.alt} width={admissions.formImage.w} height={admissions.formImage.h}

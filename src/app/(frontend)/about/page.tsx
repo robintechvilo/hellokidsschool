@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Image from "next/image";
 import { Eye, Target } from "lucide-react";
-import { getAbout, getHome, getLeadership, getOffer, getSite } from "@/lib/cms";
+import { getAbout, getHome, getLeadership, getOffer, getPage, getSite, pageMetadata } from "@/lib/cms";
 import { bg, onBg } from "@/lib/colors";
 import { PageHero } from "@/components/ui/PageHero";
 import { SectionTitle } from "@/components/ui/SectionTitle";
@@ -12,22 +12,19 @@ import { Leadership } from "@/components/sections/Leadership";
 import { Stats } from "@/components/sections/Stats";
 import { AdmissionCTA } from "@/components/sections/AdmissionCTA";
 
-export const metadata: Metadata = {
-  title: "About Us",
-  description: "Learn about Hello Kids Pre-School & Day Care in West Shewrapara, Mirpur — our story, mission, values and leadership.",
-};
+export const generateMetadata = (): Promise<Metadata> => pageMetadata("about");
 
 export default async function AboutPage() {
+  const page = await getPage("about");
   const [about, home, team, site, offer] = await Promise.all([getAbout(), getHome(), getLeadership(), getSite(), getOffer()]);
   return (
     <>
-      <PageHero eyebrow="Get to know us" title="About Hello Kids" crumbs={[{ label: "About" }]}
-        text="A happy, safe and colorful pre-school where little ones play, learn and grow." />
+      <PageHero eyebrow={page.banner.eyebrow} title={page.banner.title} text={page.banner.text || undefined} crumbs={[{ label: "About" }]} />
 
       <section className="py-16 sm:py-24">
         <div className="container-x grid items-center gap-14 lg:grid-cols-2">
           <div>
-            <SectionTitle align="left" eyebrow="Our story" title="A second home for little learners" />
+            <SectionTitle align="left" eyebrow={page.headings.story.eyebrow} title={page.headings.story.title} text={page.headings.story.text || undefined} />
             <Reveal delay={0.1}>
               {about.story.map((p) => <p key={p} className="mt-4 text-lg text-ink/80">{p}</p>)}
             </Reveal>
@@ -60,7 +57,7 @@ export default async function AboutPage() {
 
       <section className="py-16 sm:py-24">
         <div className="container-x">
-          <SectionTitle eyebrow="What we believe in" title="Our Values" />
+          <SectionTitle eyebrow={page.headings.values.eyebrow} title={page.headings.values.title} text={page.headings.values.text || undefined} />
           <div className="mt-12 grid grid-cols-2 gap-5 lg:grid-cols-4">
             {about.values.map((v, i) => (
               <Reveal key={v.title} delay={i * 0.07}>
@@ -76,7 +73,7 @@ export default async function AboutPage() {
       </section>
 
       <Stats stats={home.stats} />
-      {team.length > 0 && <Leadership items={team} />}
+      {team.length > 0 && <Leadership items={team} heading={home.headings.leadership} />}
       <AdmissionCTA site={site} offer={offer} />
     </>
   );
